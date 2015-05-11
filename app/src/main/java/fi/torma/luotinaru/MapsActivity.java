@@ -1,10 +1,17 @@
 package fi.torma.luotinaru;
 
-import android.support.v4.app.FragmentActivity;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -61,5 +68,69 @@ public class MapsActivity extends FragmentActivity {
      */
     private void setUpMap() {
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
+
+        // Enabling MyLocation Layer of Google Map
+        mMap.setMyLocationEnabled(true);
+
+        // Getting LocationManager object from System Service LOCATION_SERVICE
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        // Creating a criteria object to retrieve provider
+        Criteria criteria = new Criteria();
+
+        // Getting the name of the best provider
+        String provider = locationManager.getBestProvider(criteria, true);
+
+        // Getting Current Location
+        Location location = locationManager.getLastKnownLocation(provider);
+
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                // redraw the marker when get location update.
+                drawMarker(location);
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
+        if (location != null) {
+            // zoom
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                    new LatLng(location.getLatitude(), location.getLongitude()),
+                    15);
+            mMap.moveCamera(cameraUpdate);
+
+            //PLACE THE INITIAL MARKER
+            drawMarker(location);
+        }
+
+        locationManager.requestLocationUpdates(provider, 5000, 0, locationListener);
+
     }
+
+    private void drawMarker(Location location) {
+        // Remove any existing markers on the map
+        mMap.clear();
+        LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+        mMap.addMarker(new MarkerOptions()
+                .position(currentPosition)
+                .snippet("Lat:" + location.getLatitude() + "Lng:" + location.getLongitude())
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                .title("ME"));
+    }
+
 }
