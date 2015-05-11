@@ -10,13 +10,18 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 
-import java.util.Collections;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
  * This AsyncTask gets the depths and adds them as markers
  */
-public class PointsTask extends AsyncTask<Void, Void, List<Point>> {
+public class PointsTask extends AsyncTask<String, Void, List<Point>> {
 
     public static final String TAG = "PointsTask";
 
@@ -29,9 +34,39 @@ public class PointsTask extends AsyncTask<Void, Void, List<Point>> {
     }
 
     @Override
-    protected List<Point> doInBackground(Void... params) {
-        Log.d(TAG, "Returning a list of one");
-        return Collections.singletonList(new Point(60.0, 25.0, 0.0));
+    protected List<Point> doInBackground(String... params) {
+        String addr = params[0];
+
+        List<Point> points = new LinkedList<>();
+
+        try {
+            URL url = new URL("http://" + addr + "/points.csv");
+
+            Log.d(TAG, url.toString());
+
+            URLConnection conn = url.openConnection();
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] split = line.split(",");
+
+                    points.add(new Point(
+                            Double.valueOf(split[0]),
+                            Double.valueOf(split[1]),
+                            Double.valueOf(split[2])
+                    ));
+                }
+
+            }
+
+        } catch (IOException e) {
+            Log.e(TAG, e.getLocalizedMessage());
+        }
+
+        Log.d(TAG, "Returning a list of " + points.size() + " points");
+        return points;
     }
 
     @Override

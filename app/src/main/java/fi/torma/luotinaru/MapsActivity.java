@@ -52,6 +52,12 @@ public class MapsActivity extends FragmentActivity {
      * method in {@link #onResume()} to guarantee that it will be called.
      */
     private void setUpMapIfNeeded() {
+        WlanClientFinder finder = new WlanClientFinder("c8:3a:35:c1:3a:98");
+
+        mClient = finder.find();
+
+        Log.d(TAG, mClient);
+
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
@@ -62,12 +68,6 @@ public class MapsActivity extends FragmentActivity {
                 setUpMap();
             }
         }
-
-        WlanClientFinder finder = new WlanClientFinder("c8:3a:35:c1:3a:98");
-
-        mClient = finder.find();
-
-        Log.d(TAG, mClient);
     }
 
     /**
@@ -134,7 +134,7 @@ public class MapsActivity extends FragmentActivity {
     }
 
     private void startPolling() {
-        new PointsTask(this, mMap).execute();
+        new PointsTask(this, mMap).execute(mClient);
     }
 
     private void drawMarker(Location location) {
