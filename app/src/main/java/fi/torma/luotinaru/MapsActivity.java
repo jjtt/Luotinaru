@@ -6,6 +6,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -20,6 +21,7 @@ public class MapsActivity extends FragmentActivity {
     public static final String TAG = "MapsActivity";
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
+    private String mClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +62,12 @@ public class MapsActivity extends FragmentActivity {
                 setUpMap();
             }
         }
+
+        WlanClientFinder finder = new WlanClientFinder("c8:3a:35:c1:3a:98");
+
+        mClient = finder.find();
+
+        Log.d(TAG, mClient);
     }
 
     /**
