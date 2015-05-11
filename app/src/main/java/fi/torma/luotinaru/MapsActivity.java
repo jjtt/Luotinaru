@@ -17,6 +17,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity {
 
+    public static final String TAG = "MapsActivity";
+
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
     @Override
@@ -111,20 +113,25 @@ public class MapsActivity extends FragmentActivity {
             // zoom
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                     new LatLng(location.getLatitude(), location.getLongitude()),
-                    15);
+                    10);
             mMap.moveCamera(cameraUpdate);
 
-            //PLACE THE INITIAL MARKER
+            // initial marker
             drawMarker(location);
         }
 
         locationManager.requestLocationUpdates(provider, 5000, 0, locationListener);
 
+        startPolling();
+    }
+
+    private void startPolling() {
+        new PointsTask(this, mMap).execute();
     }
 
     private void drawMarker(Location location) {
         // Remove any existing markers on the map
-        mMap.clear();
+        //mMap.clear();
         LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
         mMap.addMarker(new MarkerOptions()
                 .position(currentPosition)
