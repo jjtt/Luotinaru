@@ -5,8 +5,11 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 
@@ -21,7 +24,7 @@ import java.util.List;
 /**
  * This AsyncTask gets the depths and adds them as markers
  */
-public class PointsTask extends AsyncTask<String, Void, List<Point>> {
+public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
 
     public static final String TAG = "PointsTask";
 
@@ -34,13 +37,13 @@ public class PointsTask extends AsyncTask<String, Void, List<Point>> {
     }
 
     @Override
-    protected List<Point> doInBackground(String... params) {
+    protected LinkedList<Point> doInBackground(String... params) {
         String addr = params[0];
 
-        List<Point> points = new LinkedList<>();
+        LinkedList<Point> points = new LinkedList<>();
 
         try {
-            URL url = new URL("http://" + addr + "/points.csv");
+            URL url = new URL("http://" + addr + "/cgi-bin/latest.py");
 
             Log.d(TAG, url.toString());
 
@@ -70,12 +73,10 @@ public class PointsTask extends AsyncTask<String, Void, List<Point>> {
     }
 
     @Override
-    protected void onPostExecute(List<Point> points) {
+    protected void onPostExecute(LinkedList<Point> points) {
         Log.d(TAG, "Processing the list");
 
         for (Point point : points) {
-
-            Log.d(TAG, point.toString());
 
             Bitmap icon = mIconGenerator.makeIcon(String.valueOf(point.getDepth()));
 
@@ -84,5 +85,12 @@ public class PointsTask extends AsyncTask<String, Void, List<Point>> {
                     .icon(BitmapDescriptorFactory.fromBitmap(icon))
                     .title(point.toString()));
         }
+
+        // Zoom map to latest point
+        Point point = points.getLast();
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                point.getLatLng(),
+                18);
+        mMap.moveCamera(cameraUpdate);
     }
 }
