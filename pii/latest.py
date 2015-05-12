@@ -13,7 +13,7 @@ KPLEX="kplex serial:filename=/dev/ttyUSB0,direction=in serial:filename=/dev/rfco
 STORAGE="/var/www/nmea"
 
 def findLatestOutpath():
-  currentMax = max([0] + [int(d) for d in os.listdir(STORAGE)]) 
+  currentMax = max([0] + [int(d) for d in os.listdir(STORAGE) if os.path.isdir(os.path.join(STORAGE, d))])
   return (STORAGE + "/%05d") % (currentMax)
 
 
