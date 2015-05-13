@@ -90,7 +90,7 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
         Point point = points.getLast();
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                 point.getLatLng(),
-                18);
+                19);
         mMap.moveCamera(cameraUpdate);
     }
 }
