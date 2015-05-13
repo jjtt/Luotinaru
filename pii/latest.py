@@ -36,9 +36,10 @@ for line in f.readlines():
     newDepth = True
   elif line.startswith("$GPGGA"):
     msg = pynmea2.parse(line)
-    curLat = msg.latitude
-    curLng = msg.longitude
-    newPos = True
+    if msg.gps_qual != '0':
+      curLat = msg.latitude
+      curLng = msg.longitude
+      newPos = True
   else:
     continue
     
