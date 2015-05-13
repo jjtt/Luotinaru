@@ -85,6 +85,7 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
 
             Bitmap icon = mIconGenerator.makeIcon(String.valueOf(point.getDepth()));
 
+            //FIXME: OOM here from the fromBitmap-method with a list of justh 477 points
             mMap.addMarker(new MarkerOptions()
                     .position(point.getLatLng())
                     .icon(BitmapDescriptorFactory.fromBitmap(icon))
