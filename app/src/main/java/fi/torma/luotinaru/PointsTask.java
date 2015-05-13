@@ -76,6 +76,11 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
     protected void onPostExecute(LinkedList<Point> points) {
         Log.d(TAG, "Processing the list");
 
+        if (points.isEmpty()) {
+            Log.d(TAG, "No points");
+            return;
+        }
+
         for (Point point : points) {
 
             Bitmap icon = mIconGenerator.makeIcon(String.valueOf(point.getDepth()));

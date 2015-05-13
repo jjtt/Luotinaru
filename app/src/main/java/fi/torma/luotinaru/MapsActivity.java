@@ -4,9 +4,12 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -16,7 +19,13 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class MapsActivity extends FragmentActivity {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+
+public class MapsActivity extends FragmentActivity implements View.OnClickListener {
 
     public static final String TAG = "MapsActivity";
 
@@ -28,6 +37,13 @@ public class MapsActivity extends FragmentActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+
+        Button stop = (Button) findViewById(R.id.button_stop);
+        stop.setOnClickListener(this);
+        Button refresh = (Button) findViewById(R.id.button_refresh);
+        refresh.setOnClickListener(this);
+        Button clear = (Button) findViewById(R.id.button_clear);
+        clear.setOnClickListener(this);
     }
 
     @Override
@@ -130,10 +146,10 @@ public class MapsActivity extends FragmentActivity {
 
         locationManager.requestLocationUpdates(provider, 5000, 0, locationListener);
 
-        startPolling();
+        requestPoints();
     }
 
-    private void startPolling() {
+    private void requestPoints() {
         new PointsTask(this, mMap).execute(mClient);
     }
 
@@ -148,4 +164,43 @@ public class MapsActivity extends FragmentActivity {
                 .title("ME"));
     }
 
+    @Override
+    public void onClick(View v) {
+        Button button = (Button) v;
+
+        switch (button.getId()) {
+            case R.id.button_stop:
+                // start an async task to request a stop
+                new AsyncTask<Void, Void, Void>() {
+
+                    @Override
+                    protected Void doInBackground(Void... params) {
+                        try {
+                            URL url = new URL("http://" + mClient + "/cgi-bin/stop.py");
+
+                            URLConnection conn = url.openConnection();
+                            try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+
+                                String line = reader.readLine();
+
+                                Log.d(TAG, "Stop response: " + line);
+                            }
+                        } catch (IOException e) {
+                            Log.d(TAG, e.getLocalizedMessage());
+                        }
+
+                        return null;
+                    }
+                }.execute();
+
+
+                break;
+            case R.id.button_refresh:
+                requestPoints();
+                break;
+            case R.id.button_clear:
+                mMap.clear();
+                break;
+        }
+    }
 }
