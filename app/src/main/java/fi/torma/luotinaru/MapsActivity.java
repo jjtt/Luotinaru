@@ -72,6 +72,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
         mClient = finder.find();
 
+        // FIXME: println needs a message???
         Log.d(TAG, mClient);
 
         // Do a null check to confirm that we have not already instantiated the map.
