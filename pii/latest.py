@@ -6,6 +6,7 @@ import cgitb; cgitb.enable() # for debugging
 
 import os
 import pynmea2
+import datetime
 
 FILENAME="nmea.txt"
 TIMESTAMPFILE="timestamp.txt"
@@ -16,10 +17,19 @@ def findLatestOutpath():
   currentMax = max([0] + [int(d) for d in os.listdir(STORAGE) if os.path.isdir(os.path.join(STORAGE, d))])
   return (STORAGE + "/%05d") % (currentMax)
 
+def findOutpath(idstr):
+  if idstr is None:
+    return findLatestOutpath()
+  else:
+    return STORAGE + "/" + idstr
+
 
 print "Content-Type: text/plain\n"
 
-nmeafile = os.path.join(findLatestOutpath(), FILENAME)
+form = cgi.FieldStorage()
+idstr = form.getvalue("id", None)
+
+nmeafile = os.path.join(findOutpath(idstr), FILENAME)
 
 f = open(nmeafile, "r")
 
@@ -28,6 +38,7 @@ curLng = None
 curDepth = None
 newPos = False
 newDepth = False
+time = None
 
 for line in f.readlines():
   if line.startswith("$SDDBT"):
@@ -40,10 +51,13 @@ for line in f.readlines():
       curLat = msg.latitude
       curLng = msg.longitude
       newPos = True
+  elif line.startswith("$GPRMC"):
+    msg = pynmea2.parse(line)
+    time = datetime.datetime.combine(msg.datestamp, msg.timestamp)
   else:
     continue
     
   if newPos and newDepth:
-    print "%f,%f,%f" % (curLat, curLng, curDepth)
+    print "%f,%f,%f,%s" % (curLat, curLng, curDepth, time)
     newPos = False
     newDepth = False 
