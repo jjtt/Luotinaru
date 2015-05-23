@@ -40,11 +40,12 @@ def fileData(idstr):
   return filedata
 
   
+form = cgi.FieldStorage()
+plain = form.getvalue("plain", None)
 
 
-print "Content-Type: text/html; charset=utf-8\n"
-
-tmpl = u"""
+htmlContentType = "Content-Type: text/html; charset=utf-8\n"
+htmlTmpl = u"""
 <html>
   <head>
     <title>Index</title>
@@ -73,6 +74,12 @@ tmpl = u"""
 </html>
 """
 
+plainContentType = "Content-Type: text/plain; charset=utf-8\n"
+plainTmpl = u"""#for $file in $files
+$file.id,$file.timestamp,$file.rows
+#end for
+"""
+
 files = []
 
 for idstr in listDirs():
@@ -82,6 +89,17 @@ for idstr in listDirs():
 
 context = {'files': files}
 
-t = Template(tmpl, searchList=[context], filter='WebSafe')
+if plain is None:
+  tmpl = htmlTmpl
+  contentType = htmlContentType
+  filt = 'WebSafe'
+else:
+  tmpl = plainTmpl
+  contentType = plainContentType
+  filt = 'Filter'
+
+print contentType
+
+t = Template(tmpl, searchList=[context], filter=filt)
 
 print t
