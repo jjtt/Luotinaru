@@ -1,10 +1,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <CheckBoxPreference
-        android:key="example_checkbox"
-        android:title="@string/pref_title_social_recommendations"
-        android:summary="@string/pref_description_social_recommendations"
-        android:defaultValue="true" />
+    <EditTextPreference
+        android:key="skip_points"
+        android:title="@string/pref_title_skip_points"
+        android:defaultValue="1"
+        android:numeric="integer"/>
 
     <Preference
         android:key="client_ip"

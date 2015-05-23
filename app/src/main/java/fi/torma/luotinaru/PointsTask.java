@@ -1,15 +1,16 @@
 package fi.torma.luotinaru;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 
@@ -19,7 +20,6 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.LinkedList;
-import java.util.List;
 
 /**
  * This AsyncTask gets the depths and adds them as markers
@@ -30,10 +30,12 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
 
     private final GoogleMap mMap;
     private final IconGenerator mIconGenerator;
+    private final SharedPreferences mSharedPreferences;
 
     public PointsTask(Context context, GoogleMap map) {
         this.mMap = map;
         mIconGenerator = new IconGenerator(context);
+        mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     @Override
@@ -81,7 +83,15 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
             return;
         }
 
+        int skip = getSkipFromPreferences();
+        int count = -1;
+
         for (Point point : points) {
+            count++;
+
+            if (count % skip != 0) {
+                continue;
+            }
 
             Bitmap icon = mIconGenerator.makeIcon(String.valueOf(point.getDepth()));
 
@@ -98,5 +108,19 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
                 point.getLatLng(),
                 19);
         mMap.moveCamera(cameraUpdate);
+    }
+
+    /**
+     * Helper method for getting the current skip_points setting
+     * @return
+     */
+    private int getSkipFromPreferences() {
+        String str = mSharedPreferences.getString("skip_points", "1");
+
+        try {
+            return Integer.valueOf(str);
+        } catch (NumberFormatException ex) {
+            return 1;
+        }
     }
 }

@@ -6,10 +6,7 @@
     <!-- Example General settings -->
     <string name="pref_header_general">General</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
+    <string name="pref_title_skip_points">Show every n:th point</string>
 
     <string name="pref_title_client_ip">Client ip</string>
 

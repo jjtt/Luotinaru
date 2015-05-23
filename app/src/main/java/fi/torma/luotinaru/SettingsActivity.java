@@ -41,6 +41,8 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
         // Add 'general' preferences.
         addPreferencesFromResource(R.xml.pref_general);
 
+        bindPreferenceSummaryToValue(findPreference("skip_points"));
+
         Preference clientIp = findPreference("client_ip");
         bindPreferenceSummaryToValue(clientIp);
 
