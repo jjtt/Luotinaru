@@ -112,16 +112,19 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
                     .title(point.toString()));
         }
 
-        // Zoom map to latest point
-        Point point = points.getLast();
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
-                point.getLatLng(),
-                19);
-        mMap.moveCamera(cameraUpdate);
+        if (mSharedPreferences.getBoolean("zoom_to_latest", true)) {
+            // Zoom map to latest point
+            Point point = points.getLast();
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
+                    point.getLatLng(),
+                    19);
+            mMap.moveCamera(cameraUpdate);
+        }
     }
 
     /**
      * Helper method for getting the current skip_points setting
+     *
      * @return
      */
     private int getSkipFromPreferences() {

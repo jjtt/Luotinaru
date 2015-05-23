@@ -1,14 +1,20 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <EditTextPreference
-        android:key="skip_points"
-        android:title="@string/pref_title_skip_points"
         android:defaultValue="1"
-        android:numeric="integer"/>
+        android:key="skip_points"
+        android:numeric="integer"
+        android:title="@string/pref_title_skip_points" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="zoom_to_latest"
+        android:summary="@string/pref_summary_zoom_to_latest"
+        android:title="@string/pref_title_zoom_to_latest" />
 
     <Preference
+        android:defaultValue=""
         android:key="client_ip"
-        android:title="@string/pref_title_client_ip"
-        android:defaultValue="" />
+        android:title="@string/pref_title_client_ip" />
 
 </PreferenceScreen>
