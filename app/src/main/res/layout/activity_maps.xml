@@ -44,6 +44,12 @@
             android:layout_height="wrap_content"
             android:text="List"
             android:id="@+id/button_list" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Shutdown"
+            android:id="@+id/button_shutdown" />
     </LinearLayout>
 
     <FrameLayout
