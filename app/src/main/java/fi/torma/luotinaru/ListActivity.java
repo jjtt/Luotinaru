@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -24,25 +23,10 @@ public class ListActivity extends android.app.ListActivity {
 
         Map<String, String> m = new HashMap<>();
 
-        m.put("title", "Yksi");
-        m.put("description", "Yhden kuvaus");
+        m.put("title", "Latest");
         list.add(m);
-
-        m = new HashMap<>();
-        m.put("title", "Kaksi");
-        m.put("description", "Toisen kuvaus");
-        list.add(m);
-
-        m = new HashMap<>();
-        m.put("title", "Kolme");
-        m.put("description", "Kolmannen kuvaus");
-        list.add(m);
-
-        list.addAll(list);
-        list.addAll(list);
-        list.addAll(list);
-
-        ListAdapter adapter = new ArrayAdapter<Map<String, String>>(this, android.R.layout.simple_list_item_2, android.R.id.text1, list) {
+        
+        ArrayAdapter<Map<String, String>> adapter = new ArrayAdapter<Map<String, String>>(this, android.R.layout.simple_list_item_2, android.R.id.text1, list) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -57,6 +41,8 @@ public class ListActivity extends android.app.ListActivity {
         };
 
         setListAdapter(adapter);
+
+        new FilesTask(this, adapter).execute();
     }
 
 }
