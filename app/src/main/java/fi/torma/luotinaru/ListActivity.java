@@ -25,7 +25,7 @@ public class ListActivity extends android.app.ListActivity {
 
         m.put("title", "Latest");
         list.add(m);
-        
+
         ArrayAdapter<Map<String, String>> adapter = new ArrayAdapter<Map<String, String>>(this, android.R.layout.simple_list_item_2, android.R.id.text1, list) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
