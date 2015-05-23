@@ -60,8 +60,6 @@ public class FilesTask extends AsyncTask<Void, Void, List<Map<String, String>>> 
 
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    Log.d(TAG, line);
-
                     if (line.trim().isEmpty()) {
                         Log.d(TAG, "Empty line in index file skipped");
                         continue;
