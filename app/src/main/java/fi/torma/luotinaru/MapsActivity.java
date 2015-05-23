@@ -48,6 +48,8 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
         clear.setOnClickListener(this);
         Button settings = (Button) findViewById(R.id.button_settings);
         settings.setOnClickListener(this);
+        Button list = (Button) findViewById(R.id.button_list);
+        list.setOnClickListener(this);
     }
 
     @Override
@@ -208,6 +210,10 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
             case R.id.button_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
+                break;
+            case R.id.button_list:
+                Intent intent2 = new Intent(this, ListActivity.class);
+                startActivity(intent2);
                 break;
         }
     }
