@@ -90,6 +90,7 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
 
         if (points.isEmpty()) {
             Log.d(TAG, "No points");
+            Toast.makeText(mContext, "No points", Toast.LENGTH_LONG).show();
             return;
         }
 
