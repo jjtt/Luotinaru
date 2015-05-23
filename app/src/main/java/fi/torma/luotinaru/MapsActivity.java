@@ -35,6 +35,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
     public static final String TAG = "MapsActivity";
     private static final int SELECT_FILE_REQUEST = 1;
+    private static final int SETTINGS_REQUEST = 2;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private String mClient;
@@ -106,6 +107,8 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
+        baseMapFromSettings();
+
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
 
         // Enabling MyLocation Layer of Google Map
@@ -216,7 +219,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.button_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, SETTINGS_REQUEST);
                 break;
             case R.id.button_list:
                 Intent intent2 = new Intent(this, ListActivity.class);
@@ -293,6 +296,25 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
                 requestPoints();
             }
+        } else if (requestCode == SETTINGS_REQUEST) {
+            baseMapFromSettings();
+        }
+    }
+
+    /**
+     * This method sets the base map layer for the map
+     */
+    private void baseMapFromSettings() {
+        String maptype = PreferenceManager.getDefaultSharedPreferences(this).getString("map_type", "Kartta");
+
+        if ("Satelliitti".equals(maptype)) {
+            mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        } else if ("Hybridi".equals(maptype)) {
+            mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        } else if ("Maasto".equals(maptype)) {
+            mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+        } else {
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         }
     }
 }

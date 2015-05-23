@@ -43,6 +43,7 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
 
         bindPreferenceSummaryToValue(findPreference("skip_points"));
         bindPreferenceSummaryToValue(findPreference("file"));
+        bindPreferenceSummaryToValue(findPreference("map_type"));
 
         Preference clientIp = findPreference("client_ip");
         bindPreferenceSummaryToValue(clientIp);

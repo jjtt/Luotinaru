@@ -17,6 +17,12 @@
         android:key="file"
         android:title="@string/pref_title_file" />
 
+    <ListPreference
+        android:entries="@array/maptypes"
+        android:entryValues="@array/maptypevalues"
+        android:key="map_type"
+        android:title="@string/pref_title_map_type" />
+
     <Preference
         android:defaultValue=""
         android:key="client_ip"
