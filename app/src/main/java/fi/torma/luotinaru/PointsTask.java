@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,11 +30,14 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
     public static final String TAG = "PointsTask";
 
     private final GoogleMap mMap;
+    private final Context mContext;
     private final IconGenerator mIconGenerator;
     private final SharedPreferences mSharedPreferences;
+    private String mErrorMessage = null;
 
     public PointsTask(Context context, GoogleMap map) {
         this.mMap = map;
+        mContext = context;
         mIconGenerator = new IconGenerator(context);
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -66,8 +70,9 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
 
             }
 
-        } catch (IOException e) {
+        } catch (IOException | NumberFormatException e) {
             Log.e(TAG, e.getLocalizedMessage());
+            mErrorMessage = e.getLocalizedMessage();
         }
 
         Log.d(TAG, "Returning a list of " + points.size() + " points");
@@ -77,6 +82,11 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
     @Override
     protected void onPostExecute(LinkedList<Point> points) {
         Log.d(TAG, "Processing the list");
+
+        if (mErrorMessage != null) {
+            Log.d(TAG, "Errors in retrieving the points: " + mErrorMessage);
+            Toast.makeText(mContext, mErrorMessage, Toast.LENGTH_LONG).show();
+        }
 
         if (points.isEmpty()) {
             Log.d(TAG, "No points");
