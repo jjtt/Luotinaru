@@ -5,10 +5,18 @@
 
 int main()
 {
+   printf("Content-Type: text/plain\n\nTrying to shutdown...");
+
+   fflush(NULL);
+
    setuid( 0 );
    system( "/sbin/shutdown -h +1" );
 
-   printf("Content-Type: text/plain\n\nOK");
+   fflush(NULL);
+
+   printf("OK");
+
+   fflush(NULL);
 
    return 0;
 }
