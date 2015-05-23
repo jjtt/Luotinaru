@@ -11,6 +11,8 @@
     <string name="pref_title_zoom_to_latest">Zoom to latest point</string>
     <string name="pref_summary_zoom_to_latest">Zoom to latest point when reloading points</string>
 
+    <string name="pref_title_file">Current file</string>
+
     <string name="pref_title_client_ip">Client ip</string>
 
 </resources>

@@ -46,10 +46,16 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
     protected LinkedList<Point> doInBackground(String... params) {
         String addr = params[0];
 
+        String file = mSharedPreferences.getString("file", "");
+
+        if (!file.trim().isEmpty()) {
+            file = "?id=" + file;
+        }
+
         LinkedList<Point> points = new LinkedList<>();
 
         try {
-            URL url = new URL("http://" + addr + "/cgi-bin/latest.py");
+            URL url = new URL("http://" + addr + "/cgi-bin/latest.py" + file);
 
             Log.d(TAG, url.toString());
 

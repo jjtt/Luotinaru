@@ -1,6 +1,7 @@
 package fi.torma.luotinaru;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -30,6 +31,7 @@ import java.net.URLConnection;
 public class MapsActivity extends FragmentActivity implements View.OnClickListener {
 
     public static final String TAG = "MapsActivity";
+    private static final int SELECT_FILE_REQUEST = 1;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private String mClient;
@@ -213,8 +215,29 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.button_list:
                 Intent intent2 = new Intent(this, ListActivity.class);
-                startActivity(intent2);
+                startActivityForResult(intent2, SELECT_FILE_REQUEST);
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SELECT_FILE_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                String file = data.getStringExtra("file");
+
+                Log.d(TAG, "New file selected: " + file);
+
+                if ("Latest".equalsIgnoreCase(file)) {
+                    file = "";
+                }
+
+                SharedPreferences.Editor editor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+                editor.putString("file", file);
+                editor.commit();
+
+                requestPoints();
+            }
         }
     }
 }

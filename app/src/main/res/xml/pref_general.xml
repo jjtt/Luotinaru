@@ -12,6 +12,11 @@
         android:summary="@string/pref_summary_zoom_to_latest"
         android:title="@string/pref_title_zoom_to_latest" />
 
+    <EditTextPreference
+        android:defaultValue=""
+        android:key="file"
+        android:title="@string/pref_title_file" />
+
     <Preference
         android:defaultValue=""
         android:key="client_ip"

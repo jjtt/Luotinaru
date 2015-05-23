@@ -1,8 +1,11 @@
 package fi.torma.luotinaru;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
@@ -12,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ListActivity extends android.app.ListActivity {
+public class ListActivity extends android.app.ListActivity implements AdapterView.OnItemClickListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,20 @@ public class ListActivity extends android.app.ListActivity {
 
         setListAdapter(adapter);
 
+        getListView().setOnItemClickListener(this);
+
         new FilesTask(this, adapter).execute();
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Map<String, String> m = (Map<String, String>) getListAdapter().getItem(position);
+
+        String file = m.get("title");
+
+        Intent resultIntent = new Intent();
+        resultIntent.putExtra("file", file);
+        setResult(Activity.RESULT_OK, resultIntent);
+        finish();
+    }
 }
