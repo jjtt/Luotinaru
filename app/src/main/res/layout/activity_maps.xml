@@ -4,34 +4,41 @@
     android:layout_height="match_parent"
     tools:context=".MapsActivity">
 
-    <FrameLayout
+    <LinearLayout
         android:id="@+id/container_buttons"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_alignParentBottom="true">
-
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal|bottom"
+        android:orientation="horizontal">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Stop/Start"
             android:id="@+id/button_stop"
-            android:layout_gravity="left|center_vertical" />
-
-        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Refresh"
+            android:layout_gravity="left|center_vertical"
+            android:text="Stop/Start" />
+
+        <Button
             android:id="@+id/button_refresh"
-            android:layout_gravity="center" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Refresh" />
+
+        <Button
+            android:id="@+id/button_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:text="Clear" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Clear"
-            android:id="@+id/button_clear"
-            android:layout_gravity="right|center_vertical" />
-    </FrameLayout>
+            android:text="Settings"
+            android:id="@+id/button_settings" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/container"
@@ -41,12 +48,13 @@
 
 
         <fragment
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:id="@+id/map"
             tools:context=".MapsActivity"
-            android:name="com.google.android.gms.maps.SupportMapFragment"
             tools:layout="@android:layout/list_content" />
+
     </FrameLayout>
 
 </RelativeLayout>

@@ -1,5 +1,6 @@
 package fi.torma.luotinaru;
 
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -22,9 +23,14 @@ public class WlanClientFinder {
     /**
      * Find the client and return ip
      *
+     * also update the found ip address to the shared preferences
+     *
      * @return
+     * @param defaultSharedPreferences
      */
-    public String find() {
+    public String find(SharedPreferences defaultSharedPreferences) {
+
+        String addr = null;
 
         try (BufferedReader reader = new BufferedReader(new FileReader("/proc/net/arp"))) {
 
@@ -41,7 +47,8 @@ public class WlanClientFinder {
 
                     if (mAddr.equals(mac.toLowerCase())) {
                         Log.d(TAG, "Found!: " + split[0]);
-                        return split[0];
+                        addr = split[0];
+                        break;
                     }
                 }
             }
@@ -51,6 +58,10 @@ public class WlanClientFinder {
             Log.e(TAG, ex.getLocalizedMessage());
         }
 
-        return null;
+        SharedPreferences.Editor editor = defaultSharedPreferences.edit();
+        editor.putString("client_ip", String.valueOf(addr));
+        editor.commit();
+
+        return addr;
     }
 }

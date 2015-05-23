@@ -1,11 +1,13 @@
 package fi.torma.luotinaru;
 
+import android.content.Intent;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
@@ -44,6 +46,8 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
         refresh.setOnClickListener(this);
         Button clear = (Button) findViewById(R.id.button_clear);
         clear.setOnClickListener(this);
+        Button settings = (Button) findViewById(R.id.button_settings);
+        settings.setOnClickListener(this);
     }
 
     @Override
@@ -70,7 +74,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
     private void setUpMapIfNeeded() {
         WlanClientFinder finder = new WlanClientFinder("c8:3a:35:c1:3a:98");
 
-        mClient = finder.find();
+        mClient = finder.find(PreferenceManager.getDefaultSharedPreferences(this));
 
         Log.d(TAG, String.format("client address=%s", mClient));
 
@@ -200,6 +204,10 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.button_clear:
                 mMap.clear();
+                break;
+            case R.id.button_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 break;
         }
     }
