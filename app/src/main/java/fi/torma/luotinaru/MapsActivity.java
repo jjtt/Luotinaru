@@ -23,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.BufferedReader;
@@ -39,6 +40,31 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private String mClient;
+    private Marker mMyLocation;
+    private final LocationListener mLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            // redraw the marker when get location update.
+            drawMyLocationMarker(location);
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
+
+        }
+    };
+
+    ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +89,23 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
     @Override
     protected void onResume() {
         super.onResume();
-        setUpMapIfNeeded();
+
+        WlanClientFinder finder = new WlanClientFinder("c8:3a:35:c1:3a:98");
+
+        mClient = finder.find(PreferenceManager.getDefaultSharedPreferences(this));
+
+        Log.d(TAG, String.format("client address=%s", mClient));
+
+        resumeLocationUpdates();
+
+        requestPoints();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        pauseLocationUpdates();
     }
 
     /**
@@ -82,12 +124,6 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
      * method in {@link #onResume()} to guarantee that it will be called.
      */
     private void setUpMapIfNeeded() {
-        WlanClientFinder finder = new WlanClientFinder("c8:3a:35:c1:3a:98");
-
-        mClient = finder.find(PreferenceManager.getDefaultSharedPreferences(this));
-
-        Log.d(TAG, String.format("client address=%s", mClient));
-
         // Do a null check to confirm that we have not already instantiated the map.
         if (mMap == null) {
             // Try to obtain the map from the SupportMapFragment.
@@ -109,10 +145,15 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
     private void setUpMap() {
         baseMapFromSettings();
 
-        mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
-
         // Enabling MyLocation Layer of Google Map
         mMap.setMyLocationEnabled(true);
+    }
+
+    /**
+     * This method should be called onResume to start a location listener and zoom the map to
+     * the latest location
+     */
+    private void resumeLocationUpdates() {
 
         // Getting LocationManager object from System Service LOCATION_SERVICE
         LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -126,30 +167,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
         // Getting Current Location
         Location location = locationManager.getLastKnownLocation(provider);
 
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                // redraw the marker when get location update.
-                drawMarker(location);
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-
-        if (location != null) {
+        if (location != null && mMap != null) {
             // zoom
             CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(
                     new LatLng(location.getLatitude(), location.getLongitude()),
@@ -157,27 +175,62 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
             mMap.moveCamera(cameraUpdate);
 
             // initial marker
-            drawMarker(location);
+            drawMyLocationMarker(location);
         }
 
-        locationManager.requestLocationUpdates(provider, 5000, 0, locationListener);
-
-        requestPoints();
+        locationManager.requestLocationUpdates(provider, 5000, 0, mLocationListener);
     }
 
+    /**
+     * This method should be called onPause to avoid keeping the GPS on while the map is in the
+     * background
+     */
+    private void pauseLocationUpdates() {
+        // Getting LocationManager object from System Service LOCATION_SERVICE
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        locationManager.removeUpdates(mLocationListener);
+    }
+
+    /**
+     * This method executes a new AsyncTask fetching the points
+     */
     private void requestPoints() {
-        new PointsTask(this, mMap).execute(mClient);
+        if (mMap != null && mClient != null) {
+            Log.d(TAG, "Requesting points");
+            new PointsTask(this, mMap).execute(mClient);
+        } else {
+            Log.d(TAG, "No map or no client - Not requesting points");
+        }
     }
 
-    private void drawMarker(Location location) {
-        // Remove any existing markers on the map
-        //mMap.clear();
+    /**
+     * This method adds or moves the marker showing the users current location
+     *
+     * @param location
+     * @return
+     */
+    private void drawMyLocationMarker(Location location) {
         LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
-        mMap.addMarker(new MarkerOptions()
-                .position(currentPosition)
-                .snippet("Lat:" + location.getLatitude() + "Lng:" + location.getLongitude())
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                .title("ME"));
+        drawMyLocationMarker(currentPosition);
+    }
+
+    /**
+     * This method adds or moves the marker showing the position given as LatLng
+     *
+     * @param currentPosition
+     * @return
+     */
+    private void drawMyLocationMarker(LatLng currentPosition) {
+        if (mMyLocation == null) {
+            mMyLocation = mMap.addMarker(new MarkerOptions()
+                    .position(currentPosition)
+                    .snippet("Lat:" + currentPosition.latitude + "Lng:" + currentPosition.longitude)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                    .title("Käyttäjän sijainti"));
+        } else {
+            mMyLocation.setPosition(currentPosition);
+        }
     }
 
     @Override
@@ -216,6 +269,11 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
                 break;
             case R.id.button_clear:
                 mMap.clear();
+                if (mMyLocation != null) {
+                    LatLng position = mMyLocation.getPosition();
+                    mMyLocation = null;
+                    drawMyLocationMarker(position);
+                }
                 break;
             case R.id.button_settings:
                 Intent intent = new Intent(this, SettingsActivity.class);
