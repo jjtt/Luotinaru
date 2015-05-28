@@ -14,7 +14,7 @@ logging.basicConfig(level=logging.DEBUG)
 
 FILENAME="nmea.txt"
 TIMESTAMPFILE="timestamp.txt"
-KPLEX="kplex serial:filename=/dev/ttyUSB0,direction=in serial:filename=/dev/rfcomm0,direction=in file:filename=%s,direction=out file:filename=-,direction=out"
+KPLEX="kplex serial:filename=/dev/ttyUSB0,direction=in serial:filename=/dev/ttyACM0,direction=in file:filename=%s,direction=out file:filename=-,direction=out"
 STORAGE="/var/www/nmea"
 STOPFILE="stop"
 
