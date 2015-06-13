@@ -45,8 +45,9 @@ for line in f.readlines():
   try:
     if line.startswith("$SDDBT"):
       msg = pynmea2.parse(line)
-      curDepth = msg.depth_meters
-      newDepth = True
+      if not msg.depth_meters is None:
+        curDepth = msg.depth_meters
+        newDepth = True
     elif line.startswith("$GPGGA"):
       msg = pynmea2.parse(line)
       if msg.gps_qual != '0':
