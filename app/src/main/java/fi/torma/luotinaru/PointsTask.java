@@ -77,9 +77,8 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
             }
 
         } catch (IOException | NumberFormatException e) {
-	    // FIXME: println needs a message
-            Log.e(TAG, e.getLocalizedMessage());
-            mErrorMessage = e.getLocalizedMessage();
+            Log.e(TAG, "" + e.getLocalizedMessage());
+            mErrorMessage = "" + e.getLocalizedMessage();
         }
 
         Log.d(TAG, "Returning a list of " + points.size() + " points");
