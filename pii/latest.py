@@ -56,7 +56,8 @@ for line in f.readlines():
         newPos = True
     elif line.startswith("$GPRMC"):
       msg = pynmea2.parse(line)
-      time = datetime.datetime.combine(msg.datestamp, msg.timestamp)
+      if not ((msg.datestamp is None) or (msg.timestamp is None)):
+        time = datetime.datetime.combine(msg.datestamp, msg.timestamp)
     else:
       continue
   except (pynmea2.nmea.ChecksumError, pynmea2.nmea.ParseError, decimal.InvalidOperation) as e:
