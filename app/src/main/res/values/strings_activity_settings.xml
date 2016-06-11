@@ -17,4 +17,10 @@
 
     <string name="pref_title_client_ip">Client ip</string>
 
+    <string name="pref_title_visualization_type">Visualization type</string>
+    <string name="pref_title_visualization_radius">Visualization circle radius</string>
+    <string name="pref_title_visualization_depth">Visualization circle depth threshold</string>
+    <string name="pref_title_visualization_color_shallow">Visualization circle shallow color</string>
+    <string name="pref_title_visualization_color_deep">Visualization circle deep color</string>
+
 </resources>

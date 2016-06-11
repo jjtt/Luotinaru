@@ -23,6 +23,34 @@
         android:key="map_type"
         android:title="@string/pref_title_map_type" />
 
+    <ListPreference
+        android:entries="@array/viztypes"
+        android:entryValues="@array/viztypevalues"
+        android:key="visualization_type"
+        android:title="@string/pref_title_visualization_type" />
+
+    <EditTextPreference
+        android:defaultValue="1.0"
+        android:key="visualization_radius"
+        android:numeric="decimal"
+        android:title="@string/pref_title_visualization_radius" />
+
+    <EditTextPreference
+        android:defaultValue="2.0"
+        android:key="visualization_depth"
+        android:numeric="decimal"
+        android:title="@string/pref_title_visualization_depth" />
+
+    <EditTextPreference
+        android:defaultValue="#33FF0000"
+        android:key="visualization_color_shallow"
+        android:title="@string/pref_title_visualization_color_shallow" />
+
+    <EditTextPreference
+        android:defaultValue="#3300FF00"
+        android:key="visualization_color_deep"
+        android:title="@string/pref_title_visualization_color_deep" />
+
     <Preference
         android:defaultValue=""
         android:key="client_ip"

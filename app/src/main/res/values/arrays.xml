@@ -12,4 +12,12 @@
         <item>Hybridi</item>
         <item>Maasto</item>
     </string-array>
+    <string-array name="viztypes">
+        <item>Ikonit</item>
+        <item>Ympyrät</item>
+    </string-array>
+    <string-array name="viztypevalues">
+        <item>icons</item>
+        <item>circles</item>
+    </string-array>
 </resources>

@@ -45,6 +45,12 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
         bindPreferenceSummaryToValue(findPreference("file"));
         bindPreferenceSummaryToValue(findPreference("map_type"));
 
+        bindPreferenceSummaryToValue(findPreference("visualization_type"));
+        bindPreferenceSummaryToValue(findPreference("visualization_radius"));
+        bindPreferenceSummaryToValue(findPreference("visualization_depth"));
+        bindPreferenceSummaryToValue(findPreference("visualization_color_shallow"));
+        bindPreferenceSummaryToValue(findPreference("visualization_color_deep"));
+
         Preference clientIp = findPreference("client_ip");
         bindPreferenceSummaryToValue(clientIp);
 
