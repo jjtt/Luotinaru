@@ -104,7 +104,7 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
             double lat = 59.98843285;
             double lon = 24.57099222;
             for (int i=0; i<20; i++) {
-                points.add(new Point(lat + i * 0.000005, lon + i * 0.000005, 2.0));
+                points.add(new Point(lat + i * 0.000005, lon + i * 0.000005, 1.0+i*0.1));
             }
         }
 
@@ -118,19 +118,25 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
                 continue;
             }
 
-            Bitmap icon = mIconGenerator.makeIcon(String.valueOf(point.getDepth()));
+            String visualizationType = mSharedPreferences.getString("visualization_type", "circles");
+            switch (visualizationType) {
+                case "icons":
+                    Bitmap icon = mIconGenerator.makeIcon(String.valueOf(point.getDepth()));
 
-            //FIXME: OOM here from the fromBitmap-method with a list of justh 477 points
-            mMap.addMarker(new MarkerOptions()
-                    .position(point.getLatLng())
-                    .icon(BitmapDescriptorFactory.fromBitmap(icon))
-                    .title(point.toString()));
-
-            mMap.addCircle(new CircleOptions()
-                    .center(point.getLatLng())
-                    .radius(1)
-                    .strokeColor(Color.TRANSPARENT)
-                    .fillColor(Color.argb(100, 255, 0, 0)));
+                    //FIXME: OOM here from the fromBitmap-method with a list of justh 477 points
+                    mMap.addMarker(new MarkerOptions()
+                            .position(point.getLatLng())
+                            .icon(BitmapDescriptorFactory.fromBitmap(icon))
+                            .title(point.toString()));
+                    break;
+                case "circles":
+                    mMap.addCircle(new CircleOptions()
+                            .center(point.getLatLng())
+                            .radius(getRadiusFromPreferences())
+                            .strokeColor(Color.TRANSPARENT)
+                            .fillColor(colorForPoint(point)));
+                    break;
+            }
         }
 
         if (mSharedPreferences.getBoolean("zoom_to_latest", true)) {
@@ -141,6 +147,21 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
                     19);
             mMap.moveCamera(cameraUpdate);
         }
+    }
+
+    /**
+     * This method returns a color used to draw a point when using circles
+     * @param point
+     * @return
+     */
+    private int colorForPoint(Point point) {
+        String color;
+        if (point.getDepth() < getDepthThresholdFromPreferences()) {
+            color = mSharedPreferences.getString("visualization_color_shallow", "#33FF0000");
+        } else {
+            color = mSharedPreferences.getString("visualization_color_deep", "#3300FF00");
+        }
+        return Color.parseColor(color);
     }
 
     /**
@@ -155,6 +176,36 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
             return Integer.valueOf(str);
         } catch (NumberFormatException ex) {
             return 1;
+        }
+    }
+
+    /**
+     * Helper method for getting the current visualization_depth setting
+     *
+     * @return
+     */
+    private double getDepthThresholdFromPreferences() {
+        String str = mSharedPreferences.getString("visualization_depth", "2.0");
+
+        try {
+            return Double.valueOf(str);
+        } catch (NumberFormatException ex) {
+            return 2.0;
+        }
+    }
+
+    /**
+     * Helper method for getting the current visualization_radius setting
+     *
+     * @return
+     */
+    private double getRadiusFromPreferences() {
+        String str = mSharedPreferences.getString("visualization_radius", "1.0");
+
+        try {
+            return Double.valueOf(str);
+        } catch (NumberFormatException ex) {
+            return 1.0;
         }
     }
 }
