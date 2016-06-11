@@ -3,6 +3,7 @@ package fi.torma.luotinaru;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -22,6 +23,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -196,7 +199,7 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
      * This method executes a new AsyncTask fetching the points
      */
     private void requestPoints() {
-        if (mMap != null && mClient != null) {
+        if (mMap != null /*&& mClient != null*/) {
             Log.d(TAG, "Requesting points");
             new PointsTask(this, mMap).execute(mClient);
         } else {
@@ -222,12 +225,19 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
      * @return
      */
     private void drawMyLocationMarker(LatLng currentPosition) {
+        Log.d("location", currentPosition.toString());
         if (mMyLocation == null) {
             mMyLocation = mMap.addMarker(new MarkerOptions()
                     .position(currentPosition)
                     .snippet("Lat:" + currentPosition.latitude + "Lng:" + currentPosition.longitude)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                     .title("Käyttäjän sijainti"));
+
+            Circle circle = mMap.addCircle(new CircleOptions()
+                    .center(currentPosition)
+                    .radius(1)
+                    .strokeColor(Color.TRANSPARENT)
+                    .fillColor(Color.argb(100, 255, 0, 0)));
         } else {
             mMyLocation.setPosition(currentPosition);
         }

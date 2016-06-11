@@ -3,6 +3,7 @@ package fi.torma.luotinaru;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -12,6 +13,8 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.ui.IconGenerator;
 
@@ -97,7 +100,12 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
         if (points.isEmpty()) {
             Log.d(TAG, "No points");
             Toast.makeText(mContext, "No points", Toast.LENGTH_LONG).show();
-            return;
+            //return;
+            double lat = 59.98843285;
+            double lon = 24.57099222;
+            for (int i=0; i<20; i++) {
+                points.add(new Point(lat + i * 0.000005, lon + i * 0.000005, 2.0));
+            }
         }
 
         int skip = getSkipFromPreferences();
@@ -117,6 +125,12 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
                     .position(point.getLatLng())
                     .icon(BitmapDescriptorFactory.fromBitmap(icon))
                     .title(point.toString()));
+
+            mMap.addCircle(new CircleOptions()
+                    .center(point.getLatLng())
+                    .radius(1)
+                    .strokeColor(Color.TRANSPARENT)
+                    .fillColor(Color.argb(100, 255, 0, 0)));
         }
 
         if (mSharedPreferences.getBoolean("zoom_to_latest", true)) {
