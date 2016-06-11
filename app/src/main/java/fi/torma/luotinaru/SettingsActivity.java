@@ -55,6 +55,8 @@ public class SettingsActivity extends PreferenceActivity implements Preference.O
         bindPreferenceSummaryToValue(clientIp);
 
         clientIp.setOnPreferenceClickListener(this);
+
+        bindPreferenceSummaryToValue(findPreference("debug"));
     }
 
     /**

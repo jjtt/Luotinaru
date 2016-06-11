@@ -56,4 +56,9 @@
         android:key="client_ip"
         android:title="@string/pref_title_client_ip" />
 
+    <EditTextPreference
+        android:defaultValue="false"
+        android:key="debug"
+        android:title="@string/pref_title_debug" />
+
 </PreferenceScreen>

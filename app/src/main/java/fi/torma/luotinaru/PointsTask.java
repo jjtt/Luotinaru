@@ -100,11 +100,15 @@ public class PointsTask extends AsyncTask<String, Void, LinkedList<Point>> {
         if (points.isEmpty()) {
             Log.d(TAG, "No points");
             Toast.makeText(mContext, "No points", Toast.LENGTH_LONG).show();
-            //return;
-            double lat = 59.98843285;
-            double lon = 24.57099222;
-            for (int i=0; i<20; i++) {
-                points.add(new Point(lat + i * 0.000005, lon + i * 0.000005, 1.0+i*0.1));
+
+            if ("true".equals(mSharedPreferences.getString("debug", "false"))) {
+                double lat = 59.98843285;
+                double lon = 24.57099222;
+                for (int i=0; i<20; i++) {
+                    points.add(new Point(lat + i * 0.000005, lon + i * 0.000005, 1.0+i*0.1));
+                }
+            } else {
+                return;
             }
         }
 

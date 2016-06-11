@@ -199,7 +199,8 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
      * This method executes a new AsyncTask fetching the points
      */
     private void requestPoints() {
-        if (mMap != null /*&& mClient != null*/) {
+        if ("true".equals(PreferenceManager.getDefaultSharedPreferences(this).getString("debug", "false"))
+            || (mMap != null && mClient != null)) {
             Log.d(TAG, "Requesting points");
             new PointsTask(this, mMap).execute(mClient);
         } else {
@@ -232,12 +233,6 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
                     .snippet("Lat:" + currentPosition.latitude + "Lng:" + currentPosition.longitude)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                     .title("Käyttäjän sijainti"));
-
-            Circle circle = mMap.addCircle(new CircleOptions()
-                    .center(currentPosition)
-                    .radius(1)
-                    .strokeColor(Color.TRANSPARENT)
-                    .fillColor(Color.argb(100, 255, 0, 0)));
         } else {
             mMyLocation.setPosition(currentPosition);
         }
