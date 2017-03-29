@@ -13,3 +13,4 @@
 * cp index.py info_latest.py latest.py shutdown.c stop.py /var/www/cgi-bin
 * gcc -o shutdown.cgibin shutdown.c
 * mkdir /var/www/nmea
+* cp wpa_supplicant.conf /etc/wpa_supplicant/
