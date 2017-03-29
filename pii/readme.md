@@ -3,6 +3,7 @@
 * kplex deb-paketista
 * apt install lighttpd python-pip python-cheetah
 * pip install pynmea2
+* cp luotinaru.py /root/
 * cp luotinaru /etc/init.d/
 * update-rc.d luotinaru defaults
 * cp lighttpd.conf /etc/lighttpd/
