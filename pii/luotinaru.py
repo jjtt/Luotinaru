@@ -31,7 +31,8 @@ def startKplex(outpath):
     line = p.stdout.readline()
  
   p.kill()
-  os.remove(stopfile)
+  if os.path.isfile(stopfile):
+    os.remove(stopfile)
 
 def findNextOutpath():
   currentMax = max([0] + [int(d) for d in os.listdir(STORAGE) if os.path.isdir(os.path.join(STORAGE, d))])
