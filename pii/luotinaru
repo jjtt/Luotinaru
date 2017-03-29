@@ -21,7 +21,6 @@ case "$1" in
     while true; do
       /root/luotinaru.py
     done
-    /usr/local/bin/luotinaru2
     ;;
   stop)
     echo "Stopping luotinaru not supported"
