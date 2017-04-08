@@ -93,7 +93,11 @@ public class MapsActivity extends FragmentActivity implements View.OnClickListen
     protected void onResume() {
         super.onResume();
 
-        WlanClientFinder finder = new WlanClientFinder("c8:3a:35:c1:3a:98");
+        // netvjork dongle
+        //WlanClientFinder finder = new WlanClientFinder("c8:3a:35:c1:3a:98");
+
+        // rpi3 wlan
+        WlanClientFinder finder = new WlanClientFinder("b8:27:eb:30:04:98");
 
         mClient = finder.find(PreferenceManager.getDefaultSharedPreferences(this));
 
